@@ -2,12 +2,15 @@ package com.appsdeveloperblog.app.ws.io.dao;
 
 import com.appsdeveloperblog.app.ws.shared.dto.UserDTO;
 
+import java.util.List;
+
 public interface DAO {
-    public void openConnection();
-    public UserDTO getUserByUserName(String username);
-    public UserDTO saveUser(UserDTO user);
-    public UserDTO getUser(String id);
-    public void updateUser(UserDTO userProfile);
-    public void closeConnection();
+    void openConnection();
+    UserDTO getUserByUserName(String username);
+    UserDTO saveUser(UserDTO user);
+    UserDTO getUser(String id);
+    List<UserDTO> getUsers(int start, int limit);
+    void updateUser(UserDTO userProfile);
+    void closeConnection();
 
 }

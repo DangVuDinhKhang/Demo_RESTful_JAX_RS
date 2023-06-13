@@ -8,6 +8,7 @@ public class UserProfileRest {
     private String firstName;
     private String lastName;
     private String email;
+    private String href;
 
     public String getUserId() {
         return userId;
@@ -49,5 +50,5 @@ public class UserProfileRest {
         this.href = href;
     }
 
-    private String href;
+
 }

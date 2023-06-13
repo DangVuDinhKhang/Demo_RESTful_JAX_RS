@@ -10,6 +10,8 @@ import org.springframework.beans.BeanUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("/users")
 public class UsersEntryPoint {
@@ -41,6 +43,24 @@ public class UsersEntryPoint {
 
         returnValue = new UserProfileRest();
         BeanUtils.copyProperties(userProfile, returnValue);
+        return returnValue;
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<UserProfileRest> getUsers(@DefaultValue("0") @QueryParam("start") int start, @DefaultValue("50") @QueryParam("limit") int limit){
+
+        UserService userService = new UserServiceImpl();
+        List<UserDTO> users = userService.getUsers(start, limit);
+
+        // Prepare return value
+        List<UserProfileRest> returnValue = new ArrayList<>();
+        for (UserDTO userDto : users) {
+            UserProfileRest userModel = new UserProfileRest();
+            BeanUtils.copyProperties(userDto, userModel);
+            userModel.setHref("/users/" + userDto.getUserId());
+            returnValue.add(userModel);
+        }
         return returnValue;
     }
 }

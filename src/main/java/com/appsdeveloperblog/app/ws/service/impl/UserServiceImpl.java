@@ -9,6 +9,8 @@ import com.appsdeveloperblog.app.ws.shared.dto.UserDTO;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.utils.UserProfileUtils;
 
+import java.util.List;
+
 public class UserServiceImpl implements UserService {
     DAO database;
     public UserServiceImpl(){
@@ -86,6 +88,21 @@ public class UserServiceImpl implements UserService {
             this.database.closeConnection();
         }
         return returnValue;
+    }
+
+    @Override
+    public List<UserDTO> getUsers(int start, int limit) {
+        List<UserDTO> users = null;
+
+        // Get users from database
+        try {
+            this.database.openConnection();
+            users = this.database.getUsers(start, limit);
+        } finally {
+            this.database.closeConnection();
+        }
+
+        return users;
     }
 
 

@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLDAO implements DAO {
@@ -81,6 +82,33 @@ public class MySQLDAO implements DAO {
         BeanUtils.copyProperties(userEntity, userDto);
 
         return userDto;
+    }
+
+    @Override
+    public List<UserDTO> getUsers(int start, int limit) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        //Create Criteria against a particular persistent class
+        CriteriaQuery<UserEntity> criteria = cb.createQuery(UserEntity.class);
+
+        //Query roots always reference entities
+        Root<UserEntity> userRoot = criteria.from(UserEntity.class);
+        criteria.select(userRoot);
+
+        // Fetch results from start to a number of "limit"
+        List<UserEntity> searchResults = session.createQuery(criteria).
+                setFirstResult(start).
+                setMaxResults(limit).
+                getResultList();
+
+        List<UserDTO> returnValue = new ArrayList<UserDTO>();
+        for (UserEntity userEntity : searchResults) {
+            UserDTO userDto = new UserDTO();
+            BeanUtils.copyProperties(userEntity, userDto);
+            returnValue.add(userDto);
+        }
+
+        return returnValue;
     }
 
     @Override
