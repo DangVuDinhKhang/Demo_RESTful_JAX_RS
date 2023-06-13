@@ -56,11 +56,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userProfile.setToken(tokenToSaveToDatabase);
         //updateUserProfile(userProfile);
-        storeAccessToken(userProfile);
+        updateUserProfile(userProfile);
         return returnValue;
     }
 
-    public void storeAccessToken(UserDTO userProfile){
+    public void updateUserProfile(UserDTO userProfile){
         this.database = new MySQLDAO();
         try {
             database.openConnection();
@@ -69,5 +69,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         finally {
             database.closeConnection();
         }
+    }
+
+    @Override
+    public void resetSecurityCridentials(String password, UserDTO userProfile) {
+        // Gerenerate a new salt
+        UserProfileUtils userUtils = new UserProfileUtils();
+        String salt = userUtils.getSalt(30);
+
+        // Generate a new password
+        String securePassword = userUtils.generateSecurePassword(password, salt);
+        userProfile.setSalt(salt);
+        userProfile.setEncryptedPassword(securePassword);
+
+        // Update user profile
+        updateUserProfile(userProfile);
     }
 }

@@ -20,9 +20,11 @@ public class AuthenticationEntryPoint {
     public AuthenticationDetails userLogin(LoginCredentials loginCredentials){
         AuthenticationDetails returnValue = new AuthenticationDetails();
         AuthenticationService authenticationService = new AuthenticationServiceImpl();
-        UserDTO authenticateUser = authenticationService.authenticate(loginCredentials.getUsername(),loginCredentials.getPassword());
-        String accessToken = authenticationService.issueAccessToken(authenticateUser);
-        returnValue.setId(authenticateUser.getUserId());
+        UserDTO authenticatedUser = authenticationService.authenticate(loginCredentials.getUsername(),loginCredentials.getPassword());
+        // Reset Access Token
+        authenticationService.resetSecurityCridentials(loginCredentials.getPassword(), authenticatedUser);
+        String accessToken = authenticationService.issueAccessToken(authenticatedUser);
+        returnValue.setId(authenticatedUser.getUserId());
         returnValue.setToken(accessToken);
         return returnValue;
     }
